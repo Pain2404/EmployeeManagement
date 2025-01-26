@@ -83,7 +83,7 @@ namespace EmployeeManagement.Repository
         {
             return _context.Employees.Where(x => x.Salary >= minSalary && x.Salary <= maxSalary).ToList();
         }
-        public IEnumerable<Employee> SearchBiHireDate(DateTime? startDate , DateTime? endDate)
+        public IEnumerable<Employee> SearchByHireDate(DateTime? startDate , DateTime? endDate)
         {
             return _context.Employees.Where(x => (x.HireDate >= startDate || !startDate.HasValue) &&
                     (x.HireDate <= endDate || !endDate.HasValue)).ToList();
