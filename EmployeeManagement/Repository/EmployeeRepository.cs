@@ -69,8 +69,12 @@ namespace EmployeeManagement.Repository
             }
             if (!string.IsNullOrEmpty(employee.Name)) foundEmployee.Name = employee.Name;
             if (employee.Salary > 0) foundEmployee.Salary = employee.Salary;
-            if (!string.IsNullOrEmpty(employee.Position.Name)) foundEmployee.Position = employee.Position;
             if (employee.HireDate != default) foundEmployee.HireDate = employee.HireDate;
+            if (employee.PositionId != null)
+            {
+                foundEmployee.PositionId = employee.PositionId;
+                foundEmployee.Position = _context.Positions.FirstOrDefault(x => x.Id == employee.PositionId);
+            }
             _context.SaveChanges();
             return true;
 

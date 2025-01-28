@@ -56,5 +56,22 @@ namespace EmployeeManagement.Repository
             Console.WriteLine("Position was not found");
             return false;
         }
+        public bool UpdatePosition(int Id , Position position)
+        {
+            var positionToUpdate = GetPositionById(Id);
+            if (positionToUpdate != null)
+            {
+                if (!string.IsNullOrEmpty(position.Name)) positionToUpdate.Name = position.Name;
+                if (!string.IsNullOrEmpty(position.PositionStatus.ToString())) positionToUpdate.PositionStatus = position.PositionStatus;
+                if (position.DepartmentId != null)
+                {
+                    positionToUpdate.DepartmentId = position.DepartmentId;
+                    positionToUpdate.Department = _context.Departments.FirstOrDefault(x => x.Id == position.DepartmentId);
+                }
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
     }
 }

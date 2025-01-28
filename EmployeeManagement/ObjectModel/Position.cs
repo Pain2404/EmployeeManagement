@@ -19,7 +19,7 @@ namespace EmployeeManagement.ObjectModel
         [Required]
         public Department? Department { get; set; }
 
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
 
         public List<Employee> Employees { get; set; } = new List<Employee>();
 

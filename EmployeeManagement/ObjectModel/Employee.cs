@@ -25,7 +25,7 @@ namespace EmployeeManagement.ObjectModel
         [Required]
         public Position? Position { get; set; }
 
-        public int PositionId { get; set; }
+        public int? PositionId { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
