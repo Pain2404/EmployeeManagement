@@ -18,6 +18,7 @@ namespace EmployeeManagement.ObjectModel
         public List<Position> Positions { get; set; } = new List<Position>();
 
         public Employee? Manager { get; set; }
+        public int? ManagerId { get; set; }
         public string? Description { get; set; }
 
         [DataType(DataType.Date)]
