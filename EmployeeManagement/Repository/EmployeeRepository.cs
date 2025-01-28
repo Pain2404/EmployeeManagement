@@ -48,7 +48,7 @@ namespace EmployeeManagement.Repository
             }
             if (!string.IsNullOrEmpty(position))
             {
-                query = query.Where(x => x.Position.ToLower().Contains(position.ToLower()));
+                query = query.Where(x => x.Position.Name.ToLower().Contains(position.ToLower()));
             }
             if (minSalary.HasValue)
             {
@@ -63,14 +63,14 @@ namespace EmployeeManagement.Repository
         public bool UpdateEmployee(int id , Employee employee)
         {
             var foundEmployee = GetById(id);
-            if (foundEmployee != null)
+            if (foundEmployee == null)
             {
                 return false;
             }
-            if (!string.IsNullOrEmpty(foundEmployee.Name)) employee.Name = foundEmployee.Name;
-            if (foundEmployee.Salary > 0) employee.Salary = foundEmployee.Salary;
-            if (!string.IsNullOrEmpty(foundEmployee.Position)) employee.Position = foundEmployee.Position;
-            if (foundEmployee.HireDate != default) employee.HireDate = foundEmployee.HireDate;
+            if (!string.IsNullOrEmpty(employee.Name)) foundEmployee.Name = employee.Name;
+            if (employee.Salary > 0) foundEmployee.Salary = employee.Salary;
+            if (!string.IsNullOrEmpty(employee.Position.Name)) foundEmployee.Position = employee.Position;
+            if (employee.HireDate != default) foundEmployee.HireDate = employee.HireDate;
             _context.SaveChanges();
             return true;
 

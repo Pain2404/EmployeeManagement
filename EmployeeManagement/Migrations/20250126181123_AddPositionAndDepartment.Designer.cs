@@ -4,6 +4,7 @@ using EmployeeManagement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeManagement.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250126181123_AddPositionAndDepartment")]
+    partial class AddPositionAndDepartment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,10 +37,8 @@ namespace EmployeeManagement.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ManagerId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -48,8 +49,6 @@ namespace EmployeeManagement.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ManagerId");
 
                     b.ToTable("Departments");
                 });
@@ -65,7 +64,14 @@ namespace EmployeeManagement.Migrations
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DepartmentId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -78,6 +84,7 @@ namespace EmployeeManagement.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PositionId")
@@ -90,6 +97,12 @@ namespace EmployeeManagement.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("DepartmentId1")
+                        .IsUnique()
+                        .HasFilter("[DepartmentId1] IS NOT NULL");
 
                     b.HasIndex("PositionId");
 
@@ -122,22 +135,25 @@ namespace EmployeeManagement.Migrations
                     b.ToTable("Positions");
                 });
 
-            modelBuilder.Entity("EmployeeManagement.ObjectModel.Department", b =>
-                {
-                    b.HasOne("EmployeeManagement.ObjectModel.Employee", "Manager")
-                        .WithMany()
-                        .HasForeignKey("ManagerId");
-
-                    b.Navigation("Manager");
-                });
-
             modelBuilder.Entity("EmployeeManagement.ObjectModel.Employee", b =>
                 {
+                    b.HasOne("EmployeeManagement.ObjectModel.Department", "Department")
+                        .WithMany("Employees")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EmployeeManagement.ObjectModel.Department", null)
+                        .WithOne("Manager")
+                        .HasForeignKey("EmployeeManagement.ObjectModel.Employee", "DepartmentId1");
+
                     b.HasOne("EmployeeManagement.ObjectModel.Position", "Position")
                         .WithMany("Employees")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Department");
 
                     b.Navigation("Position");
                 });
@@ -155,6 +171,10 @@ namespace EmployeeManagement.Migrations
 
             modelBuilder.Entity("EmployeeManagement.ObjectModel.Department", b =>
                 {
+                    b.Navigation("Employees");
+
+                    b.Navigation("Manager");
+
                     b.Navigation("Positions");
                 });
 

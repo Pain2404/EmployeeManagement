@@ -23,7 +23,25 @@ namespace EmployeeManagement.ObjectModel
         public decimal Salary { get; set; }
 
         [Required]
-        public string Position { get; set; }
+        public Position? Position { get; set; }
 
+        public int PositionId { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime? DateOfBirth { get; set; }
+
+        public EmployeeStatus Status { get; set; } = EmployeeStatus.Active;
+
+        [MaxLength(100)]
+        [DataType(DataType.EmailAddress)]
+        public string? Email { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        public string? PhoneNumber { get; set; }
+    }
+    public enum EmployeeStatus
+    {
+        Active = 1,
+        Inactive = 0
     }
 }

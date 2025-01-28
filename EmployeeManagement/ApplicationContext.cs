@@ -12,12 +12,38 @@ namespace EmployeeManagement
     public class ApplicationContext:DbContext
     {
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Position> Positions { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+        {
+        }
+        public ApplicationContext()
+        { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(
-                   @"Server=DESKTOP-3LBG17T;Database=EmployeeManagement;Trusted_Connection=True;Encrypt=False;");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(
+                    @"Server=DESKTOP-3LBG17T;Database=EmployeeManagement;Trusted_Connection=True;Encrypt=False;");
+            }
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
 
+            modelBuilder.Entity<Department>()
+                .HasMany(d => d.Positions)
+                .WithOne(p => p.Department)
+                .HasForeignKey(p => p.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Position>()
+                .HasMany(p => p.Employees)
+                .WithOne(e => e.Position)
+                .HasForeignKey(e => e.PositionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            base.OnModelCreating(modelBuilder);
         }
         public override int SaveChanges()
         {
@@ -26,9 +52,9 @@ namespace EmployeeManagement
             foreach (var entry in entries)
             {
                 var employee = entry.Entity;
-                if (employee.Salary > 10000)
+                if (employee.Salary < 0)
                 {
-                    throw new ArgumentException("Salary cannot exceed 10.000.");
+                    throw new ArgumentException("Salary cannot be less than 0.");
                 }
                 if (employee.HireDate > DateTime.Now)
                 {
